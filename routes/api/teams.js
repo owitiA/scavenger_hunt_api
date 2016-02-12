@@ -69,19 +69,58 @@ module.exports = function TeamsResource(APIRouter, db) {
   TeamsRouter.post('/challenge', function * () {
 
     try {
-      var randCode = JSON.stringify(Math.floor(Math.random() * 55343463543 * Math.random()));
+      var randToken = JSON.stringify(Math.floor(Math.random() * 55343463543 * Math.random()).toString().slice(3, 9)); //Use better token generator
       var newTeam = new db.Team({
         name: this.request.body.name,
         members: this.request.body.members,
         tag: this.request.body.tag,
         colour: this.request.body.colour,
-        code: randCode,
+        token: randToken,
       });
       this.is('application/json');
       this.team = yield newTeam.save().then().error();
       this.body = this.team;
     } catch (e) {
       this.status = 500;
+      this.body = '';
+    }
+
+  });
+
+  /**
+   * Get challenges available to requesting team
+   * @param {String} id ID of team being updated
+   */
+  TeamsRouter.get('/challenges', function * () {
+
+    try {
+
+      if (typeof this.request.body.category != 'undefined') {
+
+        this.team = yield db.r.table('Challenge').filter(
+          db.r.row('attempts')('count').lt(6)
+          .and(db.r.row('attempts')('by').contains(this.request.body.team_id))
+          .and(db.r.row('category').eq(this.request.body.category.toLowerCase()))
+        )
+        .run();
+
+      } else {
+
+        console.log(this.request.body.team_id)
+
+        this.team = yield query = db.r.table('Challenge').filter(
+          db.r.row('attempts')('count').lt(6)
+          .and(db.r.row('attempts')('by').contains(this.request.body.team_id))
+        )
+        .run();
+
+      }
+
+      this.body = this.team;
+
+    } catch (e) {
+      console.log(e);
+      this.status = 404;
       this.body = '';
     }
 
@@ -96,8 +135,16 @@ module.exports = function TeamsResource(APIRouter, db) {
     try {
 
       // TODO: Before running update, check count?
-      this.team = yield db.r.table('Challenge').get(this.params.id).update(
-        { attempts: { count: db.r.row('attempts')('count').default(0).add(1), by: db.r.row('attempts')('by').append(this.request.body.team_id), } }
+      this.team = yield db.r.table('Challenge')
+      .filter(
+        db.r.row('attempts')('count').lt(6).and(db.r.row('id').eq(this.params.id))
+      )
+      .update(
+        { attempts: {
+            count: db.r.row('attempts')('count').default(0).add(1),
+            by: db.r.row('attempts')('by').append(this.request.body.team_id),
+          },
+        }
       ).run();
 
       this.status = 204;

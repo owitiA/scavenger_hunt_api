@@ -6,7 +6,7 @@ var Team = thinky.createModel('Team', {
   name: String,
   tag: String,
   colour: String,
-  code: String,
+  token: String,
   members: [
     {
       name: String,
