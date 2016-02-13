@@ -6,11 +6,13 @@ var Team = thinky.createModel('Team', {
   name: String,
   tag: String,
   colour: String,
+  icon: String, //Icon URL
   token: String,
   members: [
     {
       name: String,
       id: Number,
+      telephone: String,
     },
   ],
   dateRegistered: {

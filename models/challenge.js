@@ -12,6 +12,8 @@ var Challenge = thinky.createModel('Challenge', {
     by: [String],
     count: Number,
   },
+  type: String,
+  answer: String,
   dateActive: {
     _type: Date,
   },
