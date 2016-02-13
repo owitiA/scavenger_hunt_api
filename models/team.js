@@ -22,7 +22,7 @@ var Team = thinky.createModel('Team', {
 });
 
 Team.docAddListener('save', function (team) {
-  console.log('A new attendee has been saved');
+  console.log('A new team has been added to storage');
 });
 
 // Validation

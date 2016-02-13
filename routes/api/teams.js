@@ -106,9 +106,7 @@ module.exports = function TeamsResource(APIRouter, db) {
 
       } else {
 
-        console.log(this.request.body.team_id)
-
-        this.team = yield query = db.r.table('Challenge').filter(
+        this.team = yield db.r.table('Challenge').filter(
           db.r.row('attempts')('count').lt(6)
           .and(db.r.row('attempts')('by').contains(this.request.body.team_id))
         )
