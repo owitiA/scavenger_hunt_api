@@ -34,6 +34,24 @@ module.exports = function TeamsResource(APIRouter, db) {
     }
   });
 
+  /**
+   * Get members of the current team
+   * @param {String} id ID of team being updated
+   */
+  TeamsRouter.get('/members/:id', function * () {
+    try {
+      this.team = yield db.Team.get(this.params.id).run().then().error();
+      this.is('application/json');
+      this.body = this.team.members;
+    } catch (e) {
+      this.status = 404;
+      this.body = '';
+    }
+  });
+
+  /**
+   * Get stats of the current team
+   */
   TeamsRouter.get('/stats', function * () {
   });
 
@@ -50,7 +68,7 @@ module.exports = function TeamsResource(APIRouter, db) {
         members: this.request.body.members,
         tag: this.request.body.tag,
         colour: this.request.body.colour,
-        code: randCode,
+        token: randCode,
       });
       this.is('application/json');
       this.team = yield newTeam.save().then().error();
@@ -63,10 +81,12 @@ module.exports = function TeamsResource(APIRouter, db) {
   });
 
   /**
-   * Select challenge a new team from the parameters passed
+   * Answer to challenges
    * @return {Object} JSON object of team created
    */
   TeamsRouter.post('/challenge', function * () {
+
+    //Get team and user from header
 
     try {
       var randToken = JSON.stringify(Math.floor(Math.random() * 55343463543 * Math.random()).toString().slice(3, 9)); //Use better token generator

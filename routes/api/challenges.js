@@ -31,12 +31,26 @@ module.exports = function ChallengesResource(APIRouter, db) {
 
   });
 
+  //Used for posting answers to questions
+  ChallengesRouter.post('/answer', function * (next) {
+    try {
+      //Post answer to DB
+      this.body = this.challenge;
+    } catch (e) {
+      this.status = 404;
+      this.body = '';
+    }
+
+  });
+
   ChallengesRouter.post('/', function * () {
 
     var newChallenge = new db.Challenge({
       title: this.request.body.title,
       description: this.request.body.description,
       category: this.request.body.category,
+      diifficulty: this.request.body.difficulty,
+      points: this.request.body.points,
       status: this.request.body.status || 0,
       dateActive: this.request.body.dateActive,
     });
@@ -49,11 +63,14 @@ module.exports = function ChallengesResource(APIRouter, db) {
   ChallengesRouter.put('/:id', function * () {
 
     try {
+
       this.challenge = yield db.Challenge.get(this.params.id).run().then().error();
 
       this.challenge.title = this.request.body.title;
       this.challenge.description = this.request.body.description;
       this.challenge.category = this.request.body.category;
+      this.challenge.points = this.request.body.points;
+      this.challenge.difficulty = this.request.body.diifficulty;
       this.challenge.status = this.request.body.status || 0;
       this.challenge.dateActive = this.request.body.dateActive;
 

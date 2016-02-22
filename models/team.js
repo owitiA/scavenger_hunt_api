@@ -13,6 +13,7 @@ var Team = thinky.createModel('Team', {
       name: String,
       id: Number,
       telephone: String,
+      device_id: String,
     },
   ],
   dateRegistered: {
