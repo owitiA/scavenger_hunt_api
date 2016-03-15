@@ -23,7 +23,7 @@ module.exports = function ChallengesResource(APIRouter, db) {
 
       //How do we lock questions?
 
-      this.body = this.challenge;
+      this.body = this.challenge[0];
     } catch (e) {
       this.status = 404;
       this.body = '';
@@ -34,6 +34,9 @@ module.exports = function ChallengesResource(APIRouter, db) {
   //Used for posting answers to questions
   ChallengesRouter.post('/answer', function * (next) {
     try {
+      console.log(this.request.body);
+      this.challenge = {};
+
       //Post answer to DB
       this.body = this.challenge;
     } catch (e) {

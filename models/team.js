@@ -13,7 +13,6 @@ var Team = thinky.createModel('Team', {
       name: String,
       id: Number,
       telephone: String,
-      device_id: String,
     },
   ],
   dateRegistered: {
@@ -29,7 +28,7 @@ Team.docAddListener('save', function (team) {
 // Validation
 Team.pre('save', function (next) {
   if (typeof this.members === 'undefined') {
-    throw new Error('A team must have at least one member');
+    throw new Error('A team must have members');
     next();
   } else if (this.members.length > 3) {
     throw new Error('A team cannot have more than three members');
