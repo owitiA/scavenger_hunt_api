@@ -33,11 +33,12 @@ module.exports = function ChallengesResource(APIRouter, db) {
 
   ChallengesRouter.get('/:id/answers', function * (next) {
     try {
-      this.answer = yield db.Answers.filter({ challenge: this.params.id }).run().then().error();
+      this.answer = yield db.Answer.filter({ challenge: this.params.id }).run().then().error();
       this.is('application/json');
 
-      this.body = this.answer[0];
+      this.body = this.answer;
     } catch (e) {
+      console.log(e);
       this.status = 500;
       this.body = '';
     }

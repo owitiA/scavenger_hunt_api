@@ -19,8 +19,6 @@ module.exports = function (app, db, auth) {
 
   var Token = require('./utils/token');
 
-  console.log(Token.generate());
-
   // API Routes
   require('./routes/index')(APIRouter);
   require('./routes/api/challenges')(APIRouter, db);
