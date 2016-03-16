@@ -4,8 +4,9 @@ var r = thinky.r;
 
 var Answer = thinky.createModel('Answer', {
   team: String,
-  answer: String, //Icon URL
+  answer: String,
   challenge: String,
+  isCorrect: String,
   dateAnswered: {
     _type: Date,
     default: r.now(),

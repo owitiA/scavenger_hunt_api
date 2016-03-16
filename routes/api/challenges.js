@@ -39,6 +39,7 @@ module.exports = function ChallengesResource(APIRouter, db) {
         team: this.request.body.team,
         challenge: this.request.body.challenge,
         answer: this.request.body.answer,
+        isCorrect: 0,
       });
 
       //Post answer to DB
