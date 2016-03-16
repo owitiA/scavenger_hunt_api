@@ -1,4 +1,4 @@
-module.exports = function TeamsResource(APIRouter, db) {
+module.exports = function TeamsResource(APIRouter, db, Token) {
   var TeamsRouter = require('koa-router')();
 
   /**
@@ -62,11 +62,17 @@ module.exports = function TeamsResource(APIRouter, db) {
    */
   TeamsRouter.post('/', function * () {
 
+    var members = this.request.body.members.split(',');
+    var mem = [];
+    members.forEach(function (v, i) {
+      mem[i] = { members: v };
+    });
+
     try {
-      var randCode = JSON.stringify(Math.floor(Math.random() * 55343463543 * Math.random()));
+      var randCode = Token.generate();
       var newTeam = new db.Team({
         name: this.request.body.name,
-        members: this.request.body.members,
+        members: mem,
         tag: this.request.body.tag,
         colour: this.request.body.colour,
         token: randCode,
@@ -75,6 +81,7 @@ module.exports = function TeamsResource(APIRouter, db) {
       this.team = yield newTeam.save().then().error();
       this.body = this.team;
     } catch (e) {
+      console.log(e);
       this.status = 500;
       this.body = '';
     }

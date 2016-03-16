@@ -7,18 +7,24 @@ module.exports = function (app, db, auth) {
   // app.use(cors({
   //   credentials: true,
   //   origin: function (origin, c) {
-  //     var originIsWhitelisted = whitelist.indexOf(origin.header.host) !== -1;
+  //     // var originIsWhitelisted = whitelist.indexOf(origin.header.host) !== -1;
   //     return true;
   //   },
   // }));
 
+  app.use(cors({ credentials:false, origin: '*' }));
+
   // Namespaced API Router
   var APIRouter = require('koa-router')({ prefix: '/api/v1', });
+
+  var Token = require('./utils/token');
+
+  console.log(Token.generate());
 
   // API Routes
   require('./routes/index')(APIRouter);
   require('./routes/api/challenges')(APIRouter, db);
-  require('./routes/api/teams')(APIRouter, db);
+  require('./routes/api/teams')(APIRouter, db, Token);
   require('./routes/api/leaderboard')(APIRouter, db);
   require('./routes/api/prizes')(APIRouter, db);
 

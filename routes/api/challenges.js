@@ -31,6 +31,19 @@ module.exports = function ChallengesResource(APIRouter, db) {
 
   });
 
+  ChallengesRouter.get('/:id/answers', function * (next) {
+    try {
+      this.answer = yield db.Answers.filter({ challenge: this.params.id }).run().then().error();
+      this.is('application/json');
+
+      this.body = this.answer[0];
+    } catch (e) {
+      this.status = 500;
+      this.body = '';
+    }
+
+  });
+
   //Used for posting answers to questions
   ChallengesRouter.post('/answer', function * (next) {
     try {
@@ -56,19 +69,32 @@ module.exports = function ChallengesResource(APIRouter, db) {
 
   ChallengesRouter.post('/', function * () {
 
-    var newChallenge = new db.Challenge({
-      title: this.request.body.title,
-      description: this.request.body.description,
-      category: this.request.body.category,
-      diifficulty: this.request.body.difficulty,
-      points: this.request.body.points,
-      status: this.request.body.status || 0,
-      dateActive: this.request.body.dateActive,
-    });
+    console.log(this.request.body);
 
-    this.challenge = yield newChallenge.save().then().error();
-    this.is('application/json');
-    this.body = this.challenge;
+    try {
+
+      var newChallenge = new db.Challenge({
+        title: this.request.body.title,
+        description: this.request.body.description,
+        category: this.request.body.category,
+        difficulty: this.request.body.difficulty,
+        points: this.request.body.points,
+        answer: this.request.body.answer,
+        status: this.request.body.status || 0,
+
+        //        dateActive: this.request.body.dateActive,
+      });
+
+      this.challenge = yield newChallenge.save().then().error();
+      this.is('application/json');
+      this.body = this.challenge;
+
+    } catch (e) {
+      console.log(e);
+      this.status = 500;
+      this.body = '';
+    }
+
   });
 
   ChallengesRouter.put('/:id', function * () {

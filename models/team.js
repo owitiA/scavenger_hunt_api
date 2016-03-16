@@ -11,8 +11,6 @@ var Team = thinky.createModel('Team', {
   members: [
     {
       name: String,
-      id: Number,
-      telephone: String,
     },
   ],
   dateRegistered: {
