@@ -42,7 +42,7 @@ module.exports = function TeamsResource(APIRouter, db) {
     try {
       this.team = yield db.Team.get(this.params.id).run().then().error();
       this.is('application/json');
-      this.body = this.team.members;
+      this.body = this.team.members || [];
     } catch (e) {
       this.status = 404;
       this.body = '';
@@ -53,6 +53,7 @@ module.exports = function TeamsResource(APIRouter, db) {
    * Get stats of the current team
    */
   TeamsRouter.get('/stats', function * () {
+
   });
 
   /**

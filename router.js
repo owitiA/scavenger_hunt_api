@@ -3,6 +3,7 @@ module.exports = function (app, db, auth) {
   // Cross Origin Resource Sharing (CORS)
   var cors = require('koa-cors');
   var whitelist = ['http://localhost:1109', 'http://localhost:8000'];
+
   // app.use(cors({
   //   credentials: true,
   //   origin: function (origin, c) {

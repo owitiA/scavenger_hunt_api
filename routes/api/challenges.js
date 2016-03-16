@@ -34,11 +34,18 @@ module.exports = function ChallengesResource(APIRouter, db) {
   //Used for posting answers to questions
   ChallengesRouter.post('/answer', function * (next) {
     try {
-      console.log(this.request.body);
-      this.challenge = {};
+
+      var newAnswer = new db.Answer({
+        team: this.request.body.team,
+        challenge: this.request.body.challenge,
+        answer: this.request.body.answer,
+      });
 
       //Post answer to DB
-      this.body = this.challenge;
+      this.answer = yield newAnswer.save().then().error();
+      this.is('application/json');
+      this.body = this.answer;
+
     } catch (e) {
       this.status = 404;
       this.body = '';
